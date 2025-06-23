@@ -1,0 +1,122 @@
+import styled from "styled-components";
+import { PiShoppingCart } from "react-icons/pi";
+
+const CartButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #5ece7b;
+  color: white;
+  border: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: absolute;
+  bottom: 0px;
+  right: 16px;
+  transform: translateY(50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: box-shadow 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 11px #1d1f221a;
+  }
+`;
+
+const OutOfStockOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8d8f9a;
+  font-size: 24px;
+`;
+
+const CardDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  max-width: 386px;
+  max-height: 444px;
+  padding: 16px;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 35px #a8acb030;
+
+    ${CartButton} {
+      opacity: ${(props) => (props.$outOfStock ? 0 : 1)};
+      visibility: ${(props) => (props.$outOfStock ? "hidden" : "visible")};
+    }
+  }
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: auto;
+  line-height: 0;
+`;
+
+const ProductImage = styled.img`
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  aspect-ratio: 354 / 330;
+`;
+
+const ProductTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 400;
+  color: #1d1f22;
+  margin: 0;
+`;
+
+const ProductPrice = styled.p`
+  font-size: 18px;
+  font-weight: 500;
+  color: #1d1f22;
+  margin: 0;
+`;
+
+const ProductInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 24px;
+
+  ${ProductTitle} {
+    color: ${props => props.$outOfStock ? '#8D8F9A' : '#1D1F22'};
+  }
+
+  ${ProductPrice} {
+    color: ${props => props.$outOfStock ? '#8D8F9A' : '#1D1F22'};
+  }
+`;
+
+export default function ProductCard({ product }) {
+  return (
+    <CardDiv $outOfStock={product.outOfStock}>
+      <ImageContainer>
+        <ProductImage src={product.image} alt={product.name} />
+        {product.outOfStock && (
+          <OutOfStockOverlay>OUT OF STOCK</OutOfStockOverlay>
+        )}
+        <CartButton>
+          <PiShoppingCart size={24} color="white" />
+        </CartButton>
+      </ImageContainer>
+      <ProductInfo $outOfStock={product.outOfStock}>
+        <ProductTitle>{product.name}</ProductTitle>
+        <ProductPrice>${product.price.toFixed(2)}</ProductPrice>
+      </ProductInfo>
+    </CardDiv>
+  );
+}

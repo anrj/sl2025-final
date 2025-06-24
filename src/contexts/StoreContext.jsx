@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const StoreContext = createContext();
 
@@ -45,8 +45,41 @@ const CURRENCY_RATES = {
 };
 
 export function StoreProvider({ children }) {
-  const [cart, setCart] = useState([]);
-  const [currency, setCurrency] = useState("USD");
+  const [cart, setCart] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem("shopping-cart");
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error("Error loading cart from localStorage:", error);
+      return [];
+    }
+  });
+
+  const [currency, setCurrency] = useState(() => {
+    try {
+      const savedCurrency = localStorage.getItem("selected-currency");
+      return savedCurrency || "USD";
+    } catch (error) {
+      console.error("Error loading currency from localStorage:", error);
+      return "USD";
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("shopping-cart", JSON.stringify(cart));
+    } catch (error) {
+      console.error("Error saving cart to localStorage:", error);
+    }
+  }, [cart]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("selected-currency", currency);
+    } catch (error) {
+      console.error("Error saving currency to localStorage:", error);
+    }
+  }, [currency]);
 
   const addToCart = (product, selectedSize = product.availableSizes[0]) => {
     setCart((prev) => {

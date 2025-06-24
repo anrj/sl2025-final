@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import CartItem from "./CartItem.jsx";
+import DropdownCartItem from "./DropdownCartItem.jsx";
 import { useStore } from "../contexts/StoreContext.jsx";
 
 const CartDropdownContainer = styled.div`
@@ -54,8 +54,8 @@ const CartButton = styled.button`
     transition: background-color 0.2s ease;
 
     &:hover {
-    background: #4caf69;
-  }
+      background: #4caf69;
+    }
   }
 `;
 
@@ -73,8 +73,20 @@ const CartItemsContainer = styled.div`
   scrollbar-gutter: stable;
 `;
 
-export default function CartDropdown() {
+export default function CartDropdown({ onNavigate }) {
   const { cart, cartItemCount, cartTotal, formatPrice } = useStore();
+
+  const handleViewBag = () => {
+    if (onNavigate) {
+      onNavigate("/cart");
+    }
+  };
+
+  const handleCheckout = () => {
+    if (onNavigate) {
+      onNavigate("/checkout");
+    }
+  };
 
   return (
     <CartDropdownContainer>
@@ -85,7 +97,10 @@ export default function CartDropdown() {
 
       <CartItemsContainer $productCount={cart.length}>
         {cart.map((item) => (
-          <CartItem key={`${item.id}-${item.selectedSize}`} product={item} />
+          <DropdownCartItem
+            key={`${item.id}-${item.selectedSize}`}
+            product={item}
+          />
         ))}
       </CartItemsContainer>
 
@@ -94,8 +109,10 @@ export default function CartDropdown() {
         <span>{formatPrice(cartTotal)}</span>
       </TotalAmount>
       <ButtonDiv>
-        <CartButton>VIEW BAG</CartButton>
-        <CartButton className="checkout-btn">CHECK OUT</CartButton>
+        <CartButton onClick={handleViewBag}>VIEW BAG</CartButton>
+        <CartButton className="checkout-btn" onClick={handleCheckout}>
+          CHECK OUT
+        </CartButton>
       </ButtonDiv>
     </CartDropdownContainer>
   );

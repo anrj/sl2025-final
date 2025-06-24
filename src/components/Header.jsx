@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoSvg from "../assets/logo.svg";
 import CurrencyArrowSvg from "../assets/currency-arrow.svg";
@@ -182,6 +182,7 @@ export default function Header() {
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
   const { cartItemCount, currency, setCurrency, currencyRates } = useStore();
   const currencyRef = useRef(null);
+  const navigate = useNavigate();
 
   const onCartToggle = () => {
     setIsCartOpen(!isCartOpen);
@@ -196,6 +197,11 @@ export default function Header() {
   const onCurrencySelect = (newCurrency) => {
     setCurrency(newCurrency);
     setIsCurrencyOpen(false);
+  };
+
+  const handleNavigate = (path) => {
+    navigate(path);
+    setIsCartOpen(false);
   };
 
   useEffect(() => {
@@ -263,7 +269,7 @@ export default function Header() {
       />
 
       <CartDropdownWrapper $isOpen={isCartOpen}>
-        <CartDropdown />
+        <CartDropdown onNavigate={handleNavigate} />
       </CartDropdownWrapper>
     </>
   );

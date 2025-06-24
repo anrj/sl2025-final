@@ -1,114 +1,212 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useStore } from "../contexts/StoreContext";
+import chevronSvg from "../assets/chevron.svg";
+import ButtonLineSvg from "../assets/button-line.svg";
 
 const CartItemContainer = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
-  height: 162px;
-  gap: 8px;
-  margin-bottom: 16px;
-`;
-
-const CartItemButton = styled.button`
-  background: transparent;
-  border: 1px solid #1d1f22;
-  color: #1d1f22;
-  font-family: inherit;
-  font-size: 14px;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-
-  &:hover {
-    color: #ffffff;
-    background-color: #1d1f22;
-  }
-
-  ${(props) =>
-    props.$variant === "size" &&
-    `
-    &:focus {
-      outline: none;
-      color: #ffffff;
-      background-color: #1d1f22;
-    }
-    
-    &:active {
-      color: #ffffff;
-      background-color: #1d1f22;
-    }
-    
-    &.selected {
-      color: #ffffff;
-      background-color: #1d1f22;
-    }
-  `}
+  gap: 24px;
+  padding: 24px 0;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  min-height: 288px;
 `;
 
 const CartItemDetails = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
-
-  .product-brand {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.2;
-  }
-
-  .product-name {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-
-  .product-price {
-    font-weight: 500;
-  }
+  flex: 1;
+  gap: 16px;
 `;
 
-const CartItemSize = styled.div`
+const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: flex-start;
+`;
 
-  .size-buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
+const ProductBrand = styled.h3`
+  font-size: 30px;
+  font-weight: 600;
+  color: #1d1f22;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+`;
+
+const ProductName = styled.h4`
+  font-size: 30px;
+  font-weight: 400;
+  color: #1d1f22;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+`;
+
+const ProductPrice = styled.div`
+  font-size: 24px;
+  font-weight: 700;
+  color: #1d1f22;
+  margin-top: 8px;
+`;
+
+const SizeSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const SizeLabel = styled.div`
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "Roboto Condensed", sans-serif;
+  color: #1d1f22;
+  text-transform: uppercase;
+`;
+
+const SizeOptions = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const SizeButton = styled.button`
+  width: 63px;
+  height: 45px;
+  border: 1px solid #1d1f22;
+  background: ${(props) => (props.$isSelected ? "#1d1f22" : "transparent")};
+  color: ${(props) => (props.$isSelected ? "#ffffff" : "#1d1f22")};
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1d1f22;
+    color: #ffffff;
   }
 `;
 
-const CartItemAmount = styled.div`
+const QuantitySection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 24px;
-  height: 100%;
   justify-content: space-between;
+  height: 288px;
+  min-width: 45px;
 `;
 
-const CartItemImage = styled.img`
-  width: 121px;
-  height: 162px;
+const QuantityButton = styled.button`
+  width: 45px;
+  height: 45px;
+  border: 1px solid #1d1f22;
+  background: transparent;
+  color: #1d1f22;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    background: #1d1f22;
+    color: #ffffff;
+  }
+
+  &:hover img {
+    filter: brightness(0) invert(1);
+  }
+
+  img {
+    width: 15px;
+    height: 1px;
+    transition: filter 0.2s ease;
+  }
+
+  &.plus img:first-child {
+    transform: rotate(90deg);
+    position: absolute;
+  }
+
+  &.plus img:last-child {
+    position: absolute;
+  }
+`;
+
+const QuantityDisplay = styled.div`
+  font-size: 16px;
+  font-weight: 500;
+  color: #1d1f22;
+  padding: 0 8px;
+`;
+
+const ImageSection = styled.div`
+  position: relative;
+  width: 200px;
+  height: 288px;
+  overflow: hidden;
+`;
+
+const ImageContainer = styled.div`
+  display: flex;
+  width: ${(props) => props.$totalImages * 200}px;
+  height: 100%;
+  transform: translateX(${(props) => -props.$currentIndex * 200}px);
+  transition: transform 0.3s ease-in-out;
+`;
+
+const ProductImage = styled.img`
+  width: 200px;
+  height: 288px;
   object-fit: cover;
+  flex-shrink: 0;
+`;
+
+const ImageNavigation = styled.div`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+`;
+
+const ImageNavButton = styled.button`
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.73);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  &:disabled {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  img {
+    width: 8px;
+    height: 12px;
+    filter: brightness(0) invert(1);
+  }
+
+  &.prev img {
+    transform: rotate(180deg);
+  }
 `;
 
 export default function CartItem({ product }) {
@@ -117,6 +215,7 @@ export default function CartItem({ product }) {
   const [selectedSize, setSelectedSize] = useState(
     product.selectedSize || product.availableSizes[0]
   );
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleSizeChange = (newSize) => {
     const oldSize = selectedSize;
@@ -124,56 +223,94 @@ export default function CartItem({ product }) {
     updateCartItemSize(product.id, oldSize, newSize);
   };
 
+  const handleQuantityChange = (newQuantity) => {
+    updateCartItemQuantity(product.id, newQuantity, selectedSize);
+  };
+
+  const handleNextImage = () => {
+    if (currentImageIndex < product.images.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
   return (
     <CartItemContainer>
       <CartItemDetails>
-        <span className="product-brand">{product.brand}</span>
-        <span className="product-name">{product.name}</span>
-        <span className="product-price">{formatPrice(product.priceInUsd)}</span>
-        <CartItemSize>
-          <span>Size:</span>
-          <div className="size-buttons">
+        <ProductInfo>
+          <ProductBrand>{product.brand}</ProductBrand>
+          <ProductName>{product.name}</ProductName>
+          <ProductPrice>{formatPrice(product.priceInUsd)}</ProductPrice>
+        </ProductInfo>
+
+        <SizeSection>
+          <SizeLabel>Size:</SizeLabel>
+          <SizeOptions>
             {product.availableSizes.map((size) => (
-              <CartItemButton
+              <SizeButton
                 key={size}
-                $variant="size"
-                className={selectedSize === size ? "selected" : ""}
+                $isSelected={selectedSize === size}
                 onClick={() => handleSizeChange(size)}
               >
                 {size}
-              </CartItemButton>
+              </SizeButton>
             ))}
-          </div>
-        </CartItemSize>
+          </SizeOptions>
+        </SizeSection>
       </CartItemDetails>
 
-      <CartItemAmount>
-        <CartItemButton
-          onClick={() =>
-            updateCartItemQuantity(
-              product.id,
-              product.quantity + 1,
-              selectedSize
-            )
-          }
+      <QuantitySection>
+        <QuantityButton
+          className="plus"
+          onClick={() => handleQuantityChange(product.quantity + 1)}
         >
-          +
-        </CartItemButton>
-        <span>{product.quantity}</span>
-        <CartItemButton
-          onClick={() =>
-            updateCartItemQuantity(
-              product.id,
-              product.quantity - 1,
-              selectedSize
-            )
-          }
+          <img src={ButtonLineSvg} alt="" />
+          <img src={ButtonLineSvg} alt="" />
+        </QuantityButton>
+        <QuantityDisplay>{product.quantity}</QuantityDisplay>
+        <QuantityButton
+          onClick={() => handleQuantityChange(product.quantity - 1)}
         >
-          -
-        </CartItemButton>
-      </CartItemAmount>
+          <img src={ButtonLineSvg} alt="" />
+        </QuantityButton>
+      </QuantitySection>
 
-      <CartItemImage src={product.images[0]} alt={product.name} />
+      <ImageSection>
+        <ImageContainer
+          $currentIndex={currentImageIndex}
+          $totalImages={product.images.length}
+        >
+          {product.images.map((image, index) => (
+            <ProductImage
+              key={index}
+              src={image}
+              alt={`${product.name} ${index + 1}`}
+            />
+          ))}
+        </ImageContainer>
+        {product.images.length > 1 && (
+          <ImageNavigation>
+            <ImageNavButton
+              className="prev"
+              onClick={handlePrevImage}
+              disabled={currentImageIndex === 0}
+            >
+              <img src={chevronSvg} alt="Previous" />
+            </ImageNavButton>
+            <ImageNavButton
+              onClick={handleNextImage}
+              disabled={currentImageIndex === product.images.length - 1}
+            >
+              <img src={chevronSvg} alt="Next" />
+            </ImageNavButton>
+          </ImageNavigation>
+        )}
+      </ImageSection>
     </CartItemContainer>
   );
 }

@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import ProductGrid from "./components/ProductGrid";
 import Header from "./components/Header";
+import ProductGrid from "./pages/ProductGrid";
+import ProductPage from "./pages/ProductPage";
+import NotFound from "./components/NotFound";
 
 export default function App() {
   return (
@@ -9,6 +11,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<ProductGrid />} />
         <Route path="/category/:category" element={<ProductGrid />} />
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </>
   );

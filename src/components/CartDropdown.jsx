@@ -51,6 +51,11 @@ const CartButton = styled.button`
     background-color: #5ece7b;
     color: #ffffff;
     border: 1px solid #5ece7b;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+    background: #4caf69;
+  }
   }
 `;
 

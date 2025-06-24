@@ -58,6 +58,25 @@ const CartItemDetails = styled.div`
   justify-content: flex-start;
   height: 100%;
 
+  .product-brand {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+
+  .product-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
   .product-price {
     font-weight: 500;
   }
@@ -93,11 +112,8 @@ const CartItemImage = styled.img`
 `;
 
 export default function CartItem({ product }) {
-  const {
-    formatPrice,
-    updateCartItemQuantity,
-    updateCartItemSize,
-  } = useStore();
+  const { formatPrice, updateCartItemQuantity, updateCartItemSize } =
+    useStore();
   const [selectedSize, setSelectedSize] = useState(
     product.selectedSize || product.availableSizes[0]
   );
@@ -111,7 +127,8 @@ export default function CartItem({ product }) {
   return (
     <CartItemContainer>
       <CartItemDetails>
-        <span>{product.name}</span>
+        <span className="product-brand">{product.brand}</span>
+        <span className="product-name">{product.name}</span>
         <span className="product-price">{formatPrice(product.priceInUsd)}</span>
         <CartItemSize>
           <span>Size:</span>
@@ -131,11 +148,27 @@ export default function CartItem({ product }) {
       </CartItemDetails>
 
       <CartItemAmount>
-        <CartItemButton onClick={() => updateCartItemQuantity(product.id, product.quantity + 1, selectedSize)}>
+        <CartItemButton
+          onClick={() =>
+            updateCartItemQuantity(
+              product.id,
+              product.quantity + 1,
+              selectedSize
+            )
+          }
+        >
           +
         </CartItemButton>
         <span>{product.quantity}</span>
-        <CartItemButton onClick={() => updateCartItemQuantity(product.id, product.quantity - 1, selectedSize)}>
+        <CartItemButton
+          onClick={() =>
+            updateCartItemQuantity(
+              product.id,
+              product.quantity - 1,
+              selectedSize
+            )
+          }
+        >
           -
         </CartItemButton>
       </CartItemAmount>

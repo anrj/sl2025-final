@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useStore } from "../contexts/StoreContext.jsx"
 import styled from "styled-components";
-import ProductCard from "./ProductCard.jsx";
+import ProductCard from "../components/ProductCard.jsx";
 
 const ProductGridContainer = styled.div`
   display: grid;

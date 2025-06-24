@@ -5,6 +5,7 @@ const StoreContext = createContext();
 const PRODUCTS = [
   {
     id: 1,
+    brand: "Comedy club",
     name: "Misha Andguladze",
     description: "lorem ipsum this is a descripton text.",
     priceInUsd: 50.0,
@@ -15,6 +16,7 @@ const PRODUCTS = [
   },
   {
     id: 2,
+    brand: "Comedy club",
     name: "Misha Andguladze",
     description: "lorem ipsum this is a descripton text.",
     priceInUsd: 20.0,
@@ -25,6 +27,7 @@ const PRODUCTS = [
   },
   {
     id: 3,
+    brand: "Comedy club",
     name: "Misha Andguladze",
     description: "lorem ipsum this is a descripton text.",
     priceInUsd: 46.95,

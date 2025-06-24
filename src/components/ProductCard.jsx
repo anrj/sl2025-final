@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import ShoppingCartSvg from "../assets/shopping-cart.svg";
 import { useStore } from "../contexts/StoreContext";
+import { Link } from "react-router-dom";
 
 const CartButton = styled.button`
   display: flex;
@@ -44,6 +45,11 @@ const OutOfStockOverlay = styled.div`
   justify-content: center;
   color: #8d8f9a;
   font-size: 24px;
+`;
+
+const ProductLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
 `;
 
 const CardDiv = styled.div`
@@ -110,21 +116,31 @@ const ProductInfo = styled.div`
 
 export default function ProductCard({ product }) {
   const { formatPrice, addToCart } = useStore();
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    addToCart(product);
+  };
+
   return (
-    <CardDiv $outOfStock={!product.inStock}>
-      <ImageContainer>
-        <ProductImage src={product.images[0]} alt={product.name} />
-        {!product.inStock && (
-          <OutOfStockOverlay>OUT OF STOCK</OutOfStockOverlay>
-        )}
-        <CartButton onClick={() => addToCart(product)}>
-          <img src={ShoppingCartSvg} alt="Add to Cart" />
-        </CartButton>
-      </ImageContainer>
-      <ProductInfo $outOfStock={!product.inStock}>
-        <ProductTitle>{product.name}</ProductTitle>
-        <ProductPrice>{formatPrice(product.priceInUsd)}</ProductPrice>
-      </ProductInfo>
-    </CardDiv>
+    <ProductLink to={`/product/${product.id}`}>
+      <CardDiv $outOfStock={!product.inStock}>
+        <ImageContainer>
+          <ProductImage src={product.images[0]} alt={product.name} />
+          {!product.inStock && (
+            <OutOfStockOverlay>OUT OF STOCK</OutOfStockOverlay>
+          )}
+          <CartButton onClick={handleAddToCart}>
+            <img src={ShoppingCartSvg} alt="Add to Cart" />
+          </CartButton>
+        </ImageContainer>
+        <ProductInfo $outOfStock={!product.inStock}>
+          <ProductTitle>
+            {product.brand} {product.name}
+          </ProductTitle>
+          <ProductPrice>{formatPrice(product.priceInUsd)}</ProductPrice>
+        </ProductInfo>
+      </CardDiv>
+    </ProductLink>
   );
 }

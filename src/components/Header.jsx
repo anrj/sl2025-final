@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import styled from "styled-components";
-import { PiShoppingCart } from "react-icons/pi";
+import LogoSvg from "../assets/logo.svg";
+import CurrencyArrowSvg from "../assets/currency-arrow.svg";
+import ShoppingCartSvg from "../assets/shopping-cart.svg";
 import CartDropdown from "./CartDropdown.jsx";
+import { useStore } from "../contexts/StoreContext.jsx";
 
 const CartOverlay = styled.div`
   position: fixed;
@@ -82,6 +85,11 @@ const CartButton = styled.button`
   color: #43464e;
   font-size: 24px;
   cursor: pointer;
+
+  img {
+    width: 20px;
+    height: 18px;
+  }
 `;
 
 const CartItemCount = styled.div`
@@ -104,12 +112,57 @@ const CartItemCount = styled.div`
   transition: opacity 0.2s ease, visibility 0.2s ease;
 `;
 
-const CurrencySelector = styled.select`
-  color: #1d1f22;
-  background-color: transparent;
+const CurrencySelector = styled.div`
+  position: relative;
+  margin-right: 20px;
+`;
+
+const CurrencyButton = styled.button`
+  background: transparent;
   border: none;
+  color: #1d1f22;
   font-size: 18px;
   cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const CurrencyArrow = styled.img`
+  width: 8px;
+  height: 4px;
+  margin-left: 4px;
+  transition: transform 0.3s ease;
+  transform: ${(props) => (props.$isOpen ? "rotate(180deg)" : "rotate(0deg)")};
+`;
+
+const CurrencyDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 35px #a8acb019;
+  min-width: 114px;
+  z-index: 100;
+  opacity: ${(props) => (props.$isOpen ? 1 : 0)};
+  visibility: ${(props) => (props.$isOpen ? "visible" : "hidden")};
+  transform: ${(props) =>
+    props.$isOpen ? "translateY(0)" : "translateY(-10px)"};
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+`;
+
+const CurrencyOption = styled.div`
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #1d1f22;
+  gap: 8px;
+
+  &:hover {
+    background-color: #eeeeee;
+  }
 `;
 
 const CartDropdownWrapper = styled.div`
@@ -126,21 +179,37 @@ const CartDropdownWrapper = styled.div`
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
-
-  // TODO: Replace with actual cart items from context/state management
-  const [cartItems] = useState([
-    { id: 1, name: "Product 1", quantity: 2 },
-    { id: 2, name: "Product 2", quantity: 1 },
-  ]);
-
-  const totalCartItems = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+  const { cartItemCount, currency, setCurrency, currencyRates } = useStore();
+  const currencyRef = useRef(null);
 
   const onCartToggle = () => {
     setIsCartOpen(!isCartOpen);
+    setIsCurrencyOpen(false);
   };
+
+  const onCurrencyToggle = () => {
+    setIsCurrencyOpen(!isCurrencyOpen);
+    setIsCartOpen(false);
+  };
+
+  const onCurrencySelect = (newCurrency) => {
+    setCurrency(newCurrency);
+    setIsCurrencyOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (currencyRef.current && !currencyRef.current.contains(event.target)) {
+        setIsCurrencyOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -151,27 +220,47 @@ export default function Header() {
           <CategoryLink to="/category/kids">KIDS</CategoryLink>
         </CategoryNav>
         <LogoLink to="/">
-          <Logo src="logo-svg.svg" />
+          <Logo src={LogoSvg} />
         </LogoLink>
         <ActionsNav>
-          {/*TODO: better currency styling*/}
-          <CurrencySelector>
-            <option value="USD">$ USD</option>
-            <option value="EUR">€ EUR</option>
-            <option value="GBP">¥ GBP</option>
+          <CurrencySelector ref={currencyRef}>
+            <CurrencyButton onClick={onCurrencyToggle}>
+              {currencyRates[currency].symbol}
+              <CurrencyArrow
+                src={CurrencyArrowSvg}
+                $isOpen={isCurrencyOpen}
+                alt="Arrow"
+              />
+            </CurrencyButton>
+            <CurrencyDropdown $isOpen={isCurrencyOpen}>
+              {Object.keys(currencyRates).map((currencyCode) => (
+                <CurrencyOption
+                  key={currencyCode}
+                  onClick={() => onCurrencySelect(currencyCode)}
+                >
+                  {currencyRates[currencyCode].symbol} {currencyCode}
+                </CurrencyOption>
+              ))}
+            </CurrencyDropdown>
           </CurrencySelector>
           <CartButtonWrapper>
             <CartButton onClick={onCartToggle}>
-              <PiShoppingCart width={20} />
+              <img src={ShoppingCartSvg} alt="Shopping Cart" />
             </CartButton>
-            <CartItemCount $count={totalCartItems}>
-              {totalCartItems}
+            <CartItemCount $count={cartItemCount}>
+              {cartItemCount}
             </CartItemCount>
           </CartButtonWrapper>
         </ActionsNav>
       </HeaderContainer>
 
-      <CartOverlay $isOpen={isCartOpen} onClick={onCartToggle} />
+      <CartOverlay
+        $isOpen={isCartOpen}
+        onClick={() => {
+          setIsCartOpen(false);
+          setIsCurrencyOpen(false);
+        }}
+      />
 
       <CartDropdownWrapper $isOpen={isCartOpen}>
         <CartDropdown />

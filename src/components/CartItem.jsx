@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useStore } from "../contexts/StoreContext";
 
 const CartItemContainer = styled.div`
   display: flex;
@@ -91,38 +92,27 @@ const CartItemImage = styled.img`
   object-fit: cover;
 `;
 
-export default function CartItem({
-  product = {
-    name: "Product Name",
-    price: 50.0,
-    image: "/test.jpg",
-    availableSizes: ["S", "M", "L", "XL"],
-    selectedSize: "M",
-    quantity: 1,
-  },
-  onSizeChange,
-  onQuantityChange,
-}) {
-  const [selectedSize, setSelectedSize] = useState(product.selectedSize);
-  const [quantity, setQuantity] = useState(product.quantity);
+export default function CartItem({ product }) {
+  const {
+    formatPrice,
+    updateCartItemQuantity,
+    updateCartItemSize,
+  } = useStore();
+  const [selectedSize, setSelectedSize] = useState(
+    product.selectedSize || product.availableSizes[0]
+  );
 
-  const handleSizeChange = (size) => {
-    setSelectedSize(size);
-    onSizeChange?.(size);
-  };
-
-  const handleQuantityChange = (newQuantity) => {
-    if (newQuantity > 0) {
-      setQuantity(newQuantity);
-      onQuantityChange?.(newQuantity);
-    }
+  const handleSizeChange = (newSize) => {
+    const oldSize = selectedSize;
+    setSelectedSize(newSize);
+    updateCartItemSize(product.id, oldSize, newSize);
   };
 
   return (
     <CartItemContainer>
       <CartItemDetails>
         <span>{product.name}</span>
-        <span className="product-price">${product.price.toFixed(2)}</span>
+        <span className="product-price">{formatPrice(product.priceInUsd)}</span>
         <CartItemSize>
           <span>Size:</span>
           <div className="size-buttons">
@@ -141,16 +131,16 @@ export default function CartItem({
       </CartItemDetails>
 
       <CartItemAmount>
-        <CartItemButton onClick={() => handleQuantityChange(quantity + 1)}>
+        <CartItemButton onClick={() => updateCartItemQuantity(product.id, product.quantity + 1, selectedSize)}>
           +
         </CartItemButton>
-        <span>{quantity}</span>
-        <CartItemButton onClick={() => handleQuantityChange(quantity - 1)}>
+        <span>{product.quantity}</span>
+        <CartItemButton onClick={() => updateCartItemQuantity(product.id, product.quantity - 1, selectedSize)}>
           -
         </CartItemButton>
       </CartItemAmount>
 
-      <CartItemImage src={product.image} alt={product.name} />
+      <CartItemImage src={product.images[0]} alt={product.name} />
     </CartItemContainer>
   );
 }

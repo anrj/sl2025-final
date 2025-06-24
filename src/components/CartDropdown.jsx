@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import CartItem from "./CartItem.jsx";
+import { useStore } from "../contexts/StoreContext.jsx";
 
 const CartDropdownContainer = styled.div`
   display: flex;
@@ -61,85 +62,31 @@ const ButtonDiv = styled.div`
 
 const CartItemsContainer = styled.div`
   flex: 1;
-  overflow-y: auto;
+  overflow-y: ${(props) => (props.$productCount > 2 ? "auto" : "hidden")};
   overflow-x: hidden;
   margin-bottom: 16px;
+  scrollbar-gutter: stable;
 `;
 
-export default function CartDropdown({
-  cartItems = [
-    {
-      id: 1,
-      name: "Misha Andguladze",
-      price: 50.0,
-      image: "/test.jpg",
-      availableSizes: ["S", "M", "L", "XL"],
-      selectedSize: "M",
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: "Misha Andguladze",
-      price: 50.0,
-      image: "/test.jpg",
-      availableSizes: ["S", "M", "L", "XL"],
-      selectedSize: "M",
-      quantity: 1,
-    },
-    {
-      id: 3,
-      name: "Misha Andguladze",
-      price: 50.0,
-      image: "/test.jpg",
-      availableSizes: ["S", "M", "L", "XL"],
-      selectedSize: "M",
-      quantity: 1,
-    },
-  ],
-}) {
-  //TODO: replace with actual cart data
-  const sampleItems =
-    cartItems.length > 0
-      ? cartItems
-      : [
-          {
-            id: 1,
-            name: "Misha Andguladze",
-            price: 50.0,
-            image: "/test.jpg",
-            availableSizes: ["S", "M", "L", "XL"],
-            selectedSize: "M",
-            quantity: 1,
-          },
-        ];
-  const itemCount = sampleItems.reduce((count, item) => {
-    return count + item.quantity;
-  }, 0);
-  const totalPrice = sampleItems.reduce((total, item) => {
-    return total + item.price * item.quantity;
-  }, 0);
+export default function CartDropdown() {
+  const { cart, cartItemCount, cartTotal, formatPrice } = useStore();
 
   return (
     <CartDropdownContainer>
       <CartTitle>
         <span className="bag-text">My Bag</span>
-        <span className="item-count">, {itemCount} items</span>
+        <span className="item-count">, {cartItemCount} items</span>
       </CartTitle>
 
-      <CartItemsContainer>
-        {sampleItems.map((item) => (
-          <CartItem
-            key={item.id}
-            product={item}
-            onSizeChange={() => {}}
-            onQuantityChange={() => {}}
-          />
+      <CartItemsContainer $productCount={cart.length}>
+        {cart.map((item) => (
+          <CartItem key={`${item.id}-${item.selectedSize}`} product={item} />
         ))}
       </CartItemsContainer>
 
       <TotalAmount>
         <span>Total</span>
-        <span>${totalPrice.toFixed(2)}</span>
+        <span>{formatPrice(cartTotal)}</span>
       </TotalAmount>
       <ButtonDiv>
         <CartButton>VIEW BAG</CartButton>

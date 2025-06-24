@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { PiShoppingCart } from "react-icons/pi";
+import ShoppingCartSvg from "../assets/shopping-cart.svg";
+import { useStore } from "../contexts/StoreContext";
 
 const CartButton = styled.button`
   display: flex;
@@ -22,6 +23,12 @@ const CartButton = styled.button`
 
   &:hover {
     box-shadow: 0 4px 11px #1d1f221a;
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
   }
 `;
 
@@ -93,29 +100,30 @@ const ProductInfo = styled.div`
   margin-top: 24px;
 
   ${ProductTitle} {
-    color: ${props => props.$outOfStock ? '#8D8F9A' : '#1D1F22'};
+    color: ${(props) => (props.$outOfStock ? "#8D8F9A" : "#1D1F22")};
   }
 
   ${ProductPrice} {
-    color: ${props => props.$outOfStock ? '#8D8F9A' : '#1D1F22'};
+    color: ${(props) => (props.$outOfStock ? "#8D8F9A" : "#1D1F22")};
   }
 `;
 
 export default function ProductCard({ product }) {
+  const { formatPrice, addToCart } = useStore();
   return (
-    <CardDiv $outOfStock={product.outOfStock}>
+    <CardDiv $outOfStock={!product.inStock}>
       <ImageContainer>
-        <ProductImage src={product.image} alt={product.name} />
-        {product.outOfStock && (
+        <ProductImage src={product.images[0]} alt={product.name} />
+        {!product.inStock && (
           <OutOfStockOverlay>OUT OF STOCK</OutOfStockOverlay>
         )}
-        <CartButton>
-          <PiShoppingCart size={24} color="white" />
+        <CartButton onClick={() => addToCart(product)}>
+          <img src={ShoppingCartSvg} alt="Add to Cart" />
         </CartButton>
       </ImageContainer>
-      <ProductInfo $outOfStock={product.outOfStock}>
+      <ProductInfo $outOfStock={!product.inStock}>
         <ProductTitle>{product.name}</ProductTitle>
-        <ProductPrice>${product.price.toFixed(2)}</ProductPrice>
+        <ProductPrice>{formatPrice(product.priceInUsd)}</ProductPrice>
       </ProductInfo>
     </CardDiv>
   );

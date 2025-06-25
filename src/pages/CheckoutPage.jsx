@@ -377,7 +377,7 @@ export default function CheckoutPage() {
       }
 
       case "province":
-        return !value ? "Please select a province" : "";
+        return !value || value === "Province" ? "Please select a province" : "";
 
       case "country":
         return !value ? "Please select a country" : "";
@@ -539,6 +539,7 @@ export default function CheckoutPage() {
           "address",
           "city",
           "postalCode",
+          "province",
           "country",
         ];
         const touchedFields = {};

@@ -57,11 +57,18 @@ const StyledSelect = styled.select`
   -moz-appearance: none;
   cursor: pointer;
 
+  &:disabled {
+    background-color: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    border-color: #d1d5db;
+  }
+
   &:focus {
     border-color: ${(props) => (props.$hasError ? "#e8aea8" : "#4caf50")};
   }
 
-  &:hover:not(:focus) {
+  &:hover:not(:focus):not(:disabled) {
     border-color: ${(props) => (props.$hasError ? "#e8aea8" : "#9ca3af")};
   }
 

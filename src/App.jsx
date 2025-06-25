@@ -20,6 +20,7 @@ export default function App() {
 
       <Route path="/checkout" element={<FullLayout />}>
         <Route index element={<CheckoutPage />} />
+        <Route path=":step" element={<CheckoutPage />} />
       </Route>
     </Routes>
   );

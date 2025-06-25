@@ -23,8 +23,8 @@ const ShippingStep = ({ formData, setFormData }) => {
         </InfoDisplay>
         <InfoDisplay>
           <span>Ship to</span>
-          {formData.address}, {formData.city} {formData.postalCode}, {formData.province},{" "}
-          {formData.country}
+          {formData.address}, {formData.city} {formData.postalCode},{" "}
+          {formData.province}, {formData.country}
         </InfoDisplay>
       </InfoDisplaySection>
 

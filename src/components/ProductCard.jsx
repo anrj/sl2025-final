@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ShoppingCartSvg from "../assets/shopping-cart.svg";
+import ShoppingCartSvg from "../assets/icons/shopping-cart.svg";
 import { useStore } from "../contexts/StoreContext";
 import { useNavigate } from "react-router-dom";
 
@@ -52,7 +52,7 @@ const CardDiv = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   max-width: 386px;
-  max-height: 444px;
+  min-height: 444px;
   padding: 16px;
   transition: box-shadow 0.3s ease;
 
@@ -84,7 +84,13 @@ const ProductTitle = styled.h2`
   font-size: 18px;
   font-weight: 400;
   color: #1d1f22;
-  margin: 0;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+  max-height: 50px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
 
 const ProductPrice = styled.p`
@@ -112,14 +118,17 @@ const ProductInfo = styled.div`
 export default function ProductCard({ product }) {
   const { formatPrice, addToCart } = useStore();
   const navigate = useNavigate();
-  
+
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addToCart(product);
   };
 
   return (
-    <CardDiv onClick={() => navigate(`/product/${product.id}`)} $outOfStock={!product.inStock}>
+    <CardDiv
+      onClick={() => navigate(`/product/${product.id}`)}
+      $outOfStock={!product.inStock}
+    >
       <ImageContainer>
         <ProductImage src={product.images[0]} alt={product.name} />
         {!product.inStock && (

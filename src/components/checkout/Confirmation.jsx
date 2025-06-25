@@ -6,7 +6,7 @@ import {
   OrderNumber,
   BackToShoppingButton,
 } from "./CheckoutStyling";
-import CheckCircleSvg from "../../assets/CheckCircle.svg";
+import CheckCircleSvg from "../../assets/icons/CheckCircle.svg";
 
 const Confirmation = ({ orderNumber, clearCart }) => {
   const navigate = useNavigate();

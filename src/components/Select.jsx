@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import CurrencyArrowSvg from "../assets/currency-arrow.svg";
-import WrongInputImg from "../assets/wrong-input.png";
+import CurrencyArrowSvg from "../assets/icons/currency-arrow.svg";
+import WrongInputImg from "../assets/icons/wrong-input.png";
 
 const SelectContainer = styled.div`
   position: relative;

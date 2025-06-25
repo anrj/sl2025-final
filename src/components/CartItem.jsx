@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useStore } from "../contexts/StoreContext";
-import chevronSvg from "../assets/chevron.svg";
-import ButtonLineSvg from "../assets/button-line.svg";
+import chevronSvg from "../assets/icons/chevron.svg";
+import ButtonLineSvg from "../assets/icons/button-line.svg";
 
 const CartItemContainer = styled.div`
   display: flex;

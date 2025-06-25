@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useStore } from "../contexts/StoreContext";
-import chevronSvg from "../assets/chevron.svg";
+import chevronSvg from "../assets/icons/chevron.svg";
 import DetailsStep from "../components/checkout/DetailsStep";
 import ShippingStep from "../components/checkout/ShippingStep";
 import PaymentStep from "../components/checkout/PaymentStep";
@@ -564,7 +564,6 @@ export default function CheckoutPage() {
           localStorage.removeItem("checkoutData");
         }
 
-        console.log("Processing payment...", formData);
         const newOrderNumber = generateOrderNumber();
         setOrderNumber(newOrderNumber);
         setIsPaymentConfirmed(true);

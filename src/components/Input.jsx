@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import WrongInputImg from "../assets/wrong-input.png";
+import WrongInputImg from "../assets/icons/wrong-input.png";
 
 const Flexcolumn = styled.div`
   display: flex;

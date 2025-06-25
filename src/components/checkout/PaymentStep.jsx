@@ -10,9 +10,9 @@ import {
   InputRow,
   CreditCardIcon,
 } from "./CheckoutStyling";
-import CreditCardSvg from "../../assets/CreditCardFill.svg";
-import CreditCardLock from "../../assets/LockFill.svg";
-import CreditCardCvv from "../../assets/cvv.svg";
+import CreditCardSvg from "../../assets/icons/CreditCardFill.svg";
+import CreditCardLock from "../../assets/icons/LockFill.svg";
+import CreditCardCvv from "../../assets/icons/cvv.svg";
 import { useStore } from "../../contexts/StoreContext";
 
 const PaymentStep = ({ formData, handleInputChange, errors, touched }) => {
@@ -26,8 +26,8 @@ const PaymentStep = ({ formData, handleInputChange, errors, touched }) => {
         </InfoDisplay>
         <InfoDisplay>
           <span>Ship to</span>
-          {formData.address}, {formData.city} {formData.postalCode}, {formData.province},{" "}
-          {formData.country}
+          {formData.address}, {formData.city} {formData.postalCode},{" "}
+          {formData.province}, {formData.country}
         </InfoDisplay>
         <InfoDisplay>
           <span>Method</span>

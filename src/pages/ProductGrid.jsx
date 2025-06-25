@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useStore } from "../contexts/StoreContext.jsx"
+import { useStore } from "../contexts/StoreContext.jsx";
 import styled from "styled-components";
 import ProductCard from "../components/ProductCard.jsx";
 

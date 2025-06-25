@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import LogoSvg from "../assets/logo.svg";
-import CurrencyArrowSvg from "../assets/currency-arrow.svg";
-import ShoppingCartSvg from "../assets/shopping-cart.svg";
+import LogoSvg from "../assets/icons/logo.svg";
+import CurrencyArrowSvg from "../assets/icons/currency-arrow.svg";
+import ShoppingCartSvg from "../assets/icons/shopping-cart.svg";
 import CartDropdown from "./CartDropdown.jsx";
 import { useStore } from "../contexts/StoreContext.jsx";
 

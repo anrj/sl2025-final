@@ -10,9 +10,5 @@ const NotFoundContainer = styled.div`
 `;
 
 export default function NotFound() {
-  return (
-    <NotFoundContainer>
-      Page not found
-    </NotFoundContainer>
-  );
+  return <NotFoundContainer>Page not found</NotFoundContainer>;
 }

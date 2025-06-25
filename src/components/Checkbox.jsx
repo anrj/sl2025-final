@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import CheckboxCmarkImg from "../assets/checkbox-cmark.png";
-import WrongInputImg from "../assets/wrong-input.png";
+import CheckboxCmarkImg from "../assets/icons/checkbox-cmark.png";
+import WrongInputImg from "../assets/icons/wrong-input.png";
 
 const CheckboxContainer = styled.div`
   display: flex;

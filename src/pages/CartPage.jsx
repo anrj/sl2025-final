@@ -100,19 +100,26 @@ export default function CartPage() {
 
       <CartContent>
         {cart.map((item, index) => (
-          <CartItem key={`${item.id}-${item.selectedSize}-${index}`} product={item} />
+          <CartItem
+            key={`${item.id}-${item.selectedSize}-${index}`}
+            product={item}
+          />
         ))}
       </CartContent>
 
       <CartSummary>
         <SummaryRow>
-          <SummaryLabel>Quantity: <span style={{fontWeight: 700}}>{cartItemCount}</span></SummaryLabel>
+          <SummaryLabel>
+            Quantity: <span style={{ fontWeight: 700 }}>{cartItemCount}</span>
+          </SummaryLabel>
         </SummaryRow>
         <SummaryRow>
           <SummaryLabel $isTotal>Total:</SummaryLabel>
           <SummaryValue $isTotal>{formatPrice(cartTotal)}</SummaryValue>
         </SummaryRow>
-        <ContinueButton onClick={() => navigate("/checkout")}>CONTINUE</ContinueButton>
+        <ContinueButton onClick={() => navigate("/checkout")}>
+          CONTINUE
+        </ContinueButton>
       </CartSummary>
     </CartPageContainer>
   );

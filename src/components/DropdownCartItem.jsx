@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useStore } from "../contexts/StoreContext";
-import ButtonLineSvg from "../assets/button-line.svg";
+import ButtonLineSvg from "../assets/icons/button-line.svg";
 
 const CartItemContainer = styled.div`
   display: flex;
@@ -27,6 +27,7 @@ const CartItemButton = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
   position: relative;
+  flex-shrink: 0;
 
   &:hover {
     color: #ffffff;
@@ -114,6 +115,26 @@ const CartItemSize = styled.div`
     flex-direction: row;
     gap: 8px;
     align-items: center;
+    overflow-x: auto;
+    max-width: ${4 * 24 + 3 * 8}px;
+
+    &::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a1a1a1;
+    }
   }
 `;
 

@@ -1,15 +1,12 @@
 import styled from "styled-components";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useStore } from "../contexts/StoreContext";
-import Input from "../components/Input";
-import Select from "../components/Select";
-import Checkbox from "../components/Checkbox";
 import chevronSvg from "../assets/chevron.svg";
-import CreditCardCvv from "../assets/cvv.svg";
-import CreditCardLock from "../assets/LockFill.svg";
-import CreditCardSvg from "../assets/CreditCardFill.svg";
-import CheckCircleSvg from "../assets/CheckCircle.svg";
+import DetailsStep from "../components/checkout/DetailsStep";
+import ShippingStep from "../components/checkout/ShippingStep";
+import PaymentStep from "../components/checkout/PaymentStep";
+import Confirmation from "../components/checkout/Confirmation";
 
 const Container = styled.div`
   display: flex;
@@ -46,6 +43,9 @@ const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding-right: 8px;
 `;
 
 const Steps = styled.div`
@@ -74,41 +74,6 @@ const Steps = styled.div`
     height: 10px;
     filter: brightness(0);
   }
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 20px;
-  font-weight: 500;
-  font-family: Roboto;
-  color: #272727;
-  line-height: 25.6px;
-  letter-spacing: -0.9px;
-  margin: 0 0 0 0;
-`;
-
-const FormSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  font-family: Roboto;
-`;
-
-const InputRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-`;
-
-const InputRowThree = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-`;
-
-const InputRowFull = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
 `;
 
 const ButtonRow = styled.div`
@@ -211,163 +176,9 @@ const SummaryRow = styled.div`
   }
 `;
 
-const ShippingOption = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  border: 1px solid ${(props) => (props.$selected ? "#4caf50" : "#E5E5E5")};
-  border-radius: 7px;
-  margin-bottom: 12px;
-  cursor: pointer;
-
-  &:hover {
-    border-color: #4caf50;
-  }
-`;
-
-const ShippingOptionLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const RadioInput = styled.input`
-  width: 16px;
-  height: 16px;
-  accent-color: #1583d7;
-`;
-
-const ShippingLabel = styled.div`
-  font-family: Roboto;
-  font-size: 14px;
-  font-weight: 500;
-  color: #272727;
-`;
-
-const ShippingPrice = styled.div`
-  font-family: Roboto;
-  font-size: 14px;
-  font-weight: 500;
-  color: #272727;
-`;
-
-const InfoDisplaySection = styled.div`
-  font-family: Helvetica;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 15.6px;
-  letter-spacing: -0.6px;
-  border: 1px solid #56b28033;
-  border-radius: 7px;
-  padding: 0 10px;
-`;
-
-const InfoDisplay = styled.div`
-  display: flex;
-  padding: 18px 16px;
-  border-bottom: 1px solid #56b28033;
-  color: #272727;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  span {
-    color: #818181;
-    min-width: 50px;
-    margin-right: 4px;
-  }
-`;
-
-const CreditCard = styled.div`
-  font-family: Helvetica;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 15.6px;
-  letter-spacing: -0.6px;
-  border: 1px solid #e5e5e5;
-  border-radius: 7px;
-  padding: 0px 16px 24px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
-
-const CreditCardHeading = styled.div`
-  background: linear-gradient(to right, #56b28033, #56b28066);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  color: #56b280;
-  font-family: Roboto;
-  font-weight: 700;
-  padding: 12px 16px;
-  margin: 0 -16px;
-  border-radius: 6px 6px 0 0;
-`;
-
-const CreditCardIcon = styled.img`
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  width: 18px;
-  height: 18px;
-`;
-
-const PaymentConfirmationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  text-align: center;
-  gap: 24px;
-`;
-
-const CheckCircleIcon = styled.img`
-  width: 100px;
-  height: 100px;
-`;
-
-const ConfirmationTitle = styled.h1`
-  font-family: Roboto;
-  font-size: 30px;
-  font-weight: 500;
-  color: #272727;
-  margin: 0;
-`;
-
-const OrderNumber = styled.div`
-  font-family: Roboto;
-  font-size: 18px;
-  font-weight: 400;
-  color: #56b280;
-  margin: 8px 0;
-`;
-
-const BackToShoppingButton = styled.button`
-  background: #56b280;
-  color: white;
-  padding: 16px 32px;
-  border: none;
-  border-radius: 7px;
-  font-size: 16px;
-  font-weight: 500;
-  font-family: Roboto;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 16px;
-
-  &:hover {
-    background: #4a9d73;
-  }
-`;
-
 export default function CheckoutPage() {
-  const { cart, cartTotal, formatPrice, countriesProvinces } = useStore();
+  const { cart, cartTotal, formatPrice, countriesProvinces, clearCart } =
+    useStore();
   const { step } = useParams();
   const navigate = useNavigate();
 
@@ -391,15 +202,33 @@ export default function CheckoutPage() {
     cvv: "",
   });
 
+  useEffect(() => {
+    const savedData = localStorage.getItem("checkoutData");
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      const {
+        cardNumber: _cardNumber,
+        holderName: _holderName,
+        expiration: _expiration,
+        cvv: _cvv,
+        ...cleanData
+      } = parsedData;
+      setFormData((prev) => ({ ...prev, ...cleanData }));
+
+      localStorage.setItem("checkoutData", JSON.stringify(cleanData));
+    }
+  }, []);
+
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
 
   const availableCountries = Object.keys(countriesProvinces).sort();
-  const availableProvinces = formData.country
-    ? countriesProvinces[formData.country] || []
-    : [];
+  const availableProvinces = useMemo(
+    () => (formData.country ? countriesProvinces[formData.country] || [] : []),
+    [formData.country, countriesProvinces]
+  );
 
   const isDetailsComplete = useCallback(() => {
     const requiredFields = [
@@ -413,19 +242,7 @@ export default function CheckoutPage() {
       "country",
     ];
     return requiredFields.every(
-      (field) => formData[field] && formData[field].trim()
-    );
-  }, [formData]);
-
-  const _isPaymentComplete = useCallback(() => {
-    const requiredPaymentFields = [
-      "cardNumber",
-      "holderName",
-      "expiration",
-      "cvv",
-    ];
-    return requiredPaymentFields.every(
-      (field) => formData[field] && formData[field].trim()
+      (field) => formData[field] && String(formData[field]).trim()
     );
   }, [formData]);
 
@@ -453,6 +270,12 @@ export default function CheckoutPage() {
 
   const shippingCost = formData.shippingMethod === "express" ? 4.99 : 0;
   const totalWithShipping = cartTotal + shippingCost;
+
+  useEffect(() => {
+    if (!cart.length) {
+      navigate("/");
+    }
+  }, [cart, navigate]);
 
   useEffect(() => {
     if (currentStep === "shipping" && !isDetailsComplete()) {
@@ -700,11 +523,8 @@ export default function CheckoutPage() {
   };
 
   const generateOrderNumber = () => {
-    const timestamp = Date.now().toString();
-    const randomNum = Math.floor(Math.random() * 10000)
-      .toString()
-      .padStart(4, "0");
-    return `#${timestamp.slice(-6)}${randomNum}`;
+    const randomNum = Math.floor(Math.random() * 9000) + 1000;
+    return `#${randomNum}`;
   };
 
   const handleContinue = () => {
@@ -719,7 +539,6 @@ export default function CheckoutPage() {
           "address",
           "city",
           "postalCode",
-          "province",
           "country",
         ];
         const touchedFields = {};
@@ -732,8 +551,20 @@ export default function CheckoutPage() {
       navigate("/checkout/payment");
     } else if (currentStep === "payment") {
       if (validatePaymentForm()) {
+        if (formData.saveInfo) {
+          const {
+            cardNumber: _cardNumber,
+            holderName: _holderName,
+            expiration: _expiration,
+            cvv: _cvv,
+            ...safeData
+          } = formData;
+          localStorage.setItem("checkoutData", JSON.stringify(safeData));
+        } else {
+          localStorage.removeItem("checkoutData");
+        }
+
         console.log("Processing payment...", formData);
-        // Simulate payment processing
         const newOrderNumber = generateOrderNumber();
         setOrderNumber(newOrderNumber);
         setIsPaymentConfirmed(true);
@@ -750,278 +581,30 @@ export default function CheckoutPage() {
 
   const renderStepContent = () => {
     if (isPaymentConfirmed) {
-      return (
-        <PaymentConfirmationContainer>
-          <CheckCircleIcon src={CheckCircleSvg} alt="Payment Confirmed" />
-          <ConfirmationTitle>Payment Confirmed</ConfirmationTitle>
-          <OrderNumber>ORDER {orderNumber}</OrderNumber>
-          <BackToShoppingButton onClick={() => navigate("/")}>
-            Back to shopping
-          </BackToShoppingButton>
-        </PaymentConfirmationContainer>
-      );
+      return <Confirmation orderNumber={orderNumber} clearCart={clearCart} />;
     }
 
     if (currentStep === "details") {
       return (
-        <>
-          <FormSection>
-            <SectionTitle>Contact</SectionTitle>
-            <Input
-              type="text"
-              name="contact"
-              placeholder="Email or mobile phone number"
-              value={formData.contact}
-              onChange={handleInputChange}
-              hasError={touched.contact && !!errors.contact}
-              errorMessage={touched.contact ? errors.contact : ""}
-            />
-          </FormSection>
-
-          <FormSection>
-            <SectionTitle>Shipping Address</SectionTitle>
-
-            <InputRow>
-              <Input
-                type="text"
-                name="firstName"
-                placeholder="Name"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                hasError={touched.firstName && !!errors.firstName}
-                errorMessage={touched.firstName ? errors.firstName : ""}
-              />
-              <Input
-                type="text"
-                name="lastName"
-                placeholder="Second Name"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                hasError={touched.lastName && !!errors.lastName}
-                errorMessage={touched.lastName ? errors.lastName : ""}
-              />
-            </InputRow>
-
-            <Input
-              type="text"
-              name="address"
-              placeholder="Address and number"
-              value={formData.address}
-              onChange={handleInputChange}
-              hasError={touched.address && !!errors.address}
-              errorMessage={touched.address ? errors.address : ""}
-            />
-
-            <Input
-              type="text"
-              name="shippingNote"
-              placeholder="Shipping note (optional)"
-              value={formData.shippingNote}
-              onChange={handleInputChange}
-            />
-
-            <InputRowThree>
-              <Input
-                type="text"
-                name="city"
-                placeholder="City"
-                value={formData.city}
-                onChange={handleInputChange}
-                hasError={touched.city && !!errors.city}
-                errorMessage={touched.city ? errors.city : ""}
-              />
-              <Input
-                type="text"
-                name="postalCode"
-                placeholder="Postal Code"
-                value={formData.postalCode}
-                onChange={handleInputChange}
-                hasError={touched.postalCode && !!errors.postalCode}
-                errorMessage={touched.postalCode ? errors.postalCode : ""}
-              />
-              <Select
-                label="Province"
-                name="province"
-                value={formData.province}
-                onChange={handleInputChange}
-                disabled={!formData.country}
-                hasError={touched.province && !!errors.province}
-                errorMessage={touched.province ? errors.province : ""}
-              >
-                <option value="">Province</option>
-                {availableProvinces.map((province) => (
-                  <option key={province} value={province}>
-                    {province}
-                  </option>
-                ))}
-              </Select>
-            </InputRowThree>
-
-            <InputRowFull>
-              <Select
-                label="Country/Region"
-                name="country"
-                value={formData.country}
-                onChange={handleInputChange}
-                hasError={touched.country && !!errors.country}
-                errorMessage={touched.country ? errors.country : ""}
-              >
-                <option value="">Select a country</option>
-                {availableCountries.map((country) => (
-                  <option key={country} value={country}>
-                    {country}
-                  </option>
-                ))}
-              </Select>
-            </InputRowFull>
-
-            <Checkbox
-              id="saveInfo"
-              name="saveInfo"
-              checked={formData.saveInfo}
-              onChange={handleInputChange}
-            >
-              Save this information for a future fast checkout
-            </Checkbox>
-          </FormSection>
-        </>
+        <DetailsStep
+          formData={formData}
+          handleInputChange={handleInputChange}
+          errors={errors}
+          touched={touched}
+          availableCountries={availableCountries}
+          availableProvinces={availableProvinces}
+        />
       );
     } else if (currentStep === "shipping") {
-      return (
-        <>
-          <InfoDisplaySection>
-            <InfoDisplay>
-              <span>Contact</span>
-              {formData.contact}
-            </InfoDisplay>
-            <InfoDisplay>
-              <span>Ship to</span>
-              {formData.address}, {formData.postalCode}, {formData.province},{" "}
-              {formData.country}
-            </InfoDisplay>
-          </InfoDisplaySection>
-
-          <FormSection>
-            <SectionTitle>Shipping method</SectionTitle>
-
-            <ShippingOption
-              $selected={formData.shippingMethod === "standard"}
-              onClick={() =>
-                setFormData((prev) => ({ ...prev, shippingMethod: "standard" }))
-              }
-            >
-              <ShippingOptionLeft>
-                <RadioInput
-                  type="radio"
-                  name="shippingMethod"
-                  value="standard"
-                  checked={formData.shippingMethod === "standard"}
-                  onChange={() => {}}
-                />
-                <ShippingLabel>Standard Shipping</ShippingLabel>
-              </ShippingOptionLeft>
-              <ShippingPrice>Free</ShippingPrice>
-            </ShippingOption>
-
-            <ShippingOption
-              $selected={formData.shippingMethod === "express"}
-              onClick={() =>
-                setFormData((prev) => ({ ...prev, shippingMethod: "express" }))
-              }
-            >
-              <ShippingOptionLeft>
-                <RadioInput
-                  type="radio"
-                  name="shippingMethod"
-                  value="express"
-                  checked={formData.shippingMethod === "express"}
-                  onChange={() => {}}
-                />
-                <ShippingLabel>Express Shipping</ShippingLabel>
-              </ShippingOptionLeft>
-              <ShippingPrice>{formatPrice(4.99)}</ShippingPrice>
-            </ShippingOption>
-          </FormSection>
-        </>
-      );
+      return <ShippingStep formData={formData} setFormData={setFormData} />;
     } else if (currentStep === "payment") {
       return (
-        <>
-          <InfoDisplaySection>
-            <InfoDisplay>
-              <span>Contact</span>
-              {formData.contact}
-            </InfoDisplay>
-            <InfoDisplay>
-              <span>Ship to</span>
-              {formData.address}, {formData.postalCode}, {formData.province},{" "}
-              {formData.country}
-            </InfoDisplay>
-            <InfoDisplay>
-              <span>Method</span>
-              {formData.shippingMethod === "standard"
-                ? "Standard Shipping - FREE"
-                : `Express Shipping - ${formatPrice(4.99)}`}
-            </InfoDisplay>
-          </InfoDisplaySection>
-          <FormSection>
-            <SectionTitle>Payment Method</SectionTitle>
-            <CreditCard>
-              <CreditCardHeading>
-                <img src={CreditCardSvg}></img>
-                Credit Card
-              </CreditCardHeading>
-              <InputRowFull>
-                <div style={{ position: "relative" }}>
-                  <Input
-                    type="text"
-                    name="cardNumber"
-                    placeholder="Card Number"
-                    value={formData.cardNumber || ""}
-                    onChange={handleInputChange}
-                    hasError={touched.cardNumber && !!errors.cardNumber}
-                    errorMessage={touched.cardNumber ? errors.cardNumber : ""}
-                  />
-                  <CreditCardIcon src={CreditCardLock} alt="lock" />
-                </div>
-              </InputRowFull>
-              <InputRowFull>
-                <Input
-                  type="text"
-                  name="holderName"
-                  placeholder="Holder Name"
-                  value={formData.holderName || ""}
-                  onChange={handleInputChange}
-                  hasError={touched.holderName && !!errors.holderName}
-                  errorMessage={touched.holderName ? errors.holderName : ""}
-                />
-              </InputRowFull>
-              <InputRow>
-                <Input
-                  type="text"
-                  name="expiration"
-                  placeholder="Expiration (MM/YY)"
-                  value={formData.expiration || ""}
-                  onChange={handleInputChange}
-                  hasError={touched.expiration && !!errors.expiration}
-                  errorMessage={touched.expiration ? errors.expiration : ""}
-                />
-                <div style={{ position: "relative" }}>
-                  <Input
-                    type="text"
-                    name="cvv"
-                    placeholder="CVV"
-                    value={formData.cvv || ""}
-                    onChange={handleInputChange}
-                    hasError={touched.cvv && !!errors.cvv}
-                    errorMessage={touched.cvv ? errors.cvv : ""}
-                  />
-                  <CreditCardIcon src={CreditCardCvv} alt="cvv" />
-                </div>
-              </InputRow>
-            </CreditCard>
-          </FormSection>
-        </>
+        <PaymentStep
+          formData={formData}
+          handleInputChange={handleInputChange}
+          errors={errors}
+          touched={touched}
+        />
       );
     }
   };
